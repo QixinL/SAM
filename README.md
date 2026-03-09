@@ -3,6 +3,7 @@
 ### Setup
 
 git clone https://github.com/QixinL/SAM.git
+
 cd SAM
 
 Save work:
