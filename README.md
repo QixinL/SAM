@@ -1,22 +1,55 @@
-# SAM
+# SAM vs Baseline Comparison
 
-### Setup
+Minimal working version to test Sharpness Aware Minimization (SAM) vs standard SGD on CIFAR-10.
 
-git clone https://github.com/QixinL/SAM.git
-cd SAM
+## Current Status
 
-Save work:
+✓ CIFAR-10 data loading (10% subset)
+✓ ResNet-18 model
+- [ ] SAM optimizer
+- [ ] Training loops
+- [ ] Experiment runner
 
-(Adds all new files)
-git add -A
+## Quick Test
 
-(Commit all files)
-git commit -a -m "Some message here"
+```bash
+pip install -r requirements.txt
+python test.py
+```
+This loads CIFAR-10 (5k training samples) and runs a forward pass through ResNet-18.
 
-(Push commited changes)
-git push
+Optional: venv
+```bash
+python -m venv venv
+```
 
-(Pull other people's changes)
-git pull
+Optional: CUDA
+```bash
+# If you want CUDA and have 3.11 or 3.12 installed
+py -3.12 -m venv venv
+nvidia-smi # Obtain your CUDA Version (eg: 13.2) and ask gpt or google to give you the whl installation
 
+# If version newer than 12.8, use 12.8 (latest version) using:
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+```
+
+## Project Structure
+
+```
+src/
+  ├── model.py     # ResNet-18
+  ├── data.py      # CIFAR-10 loading
+  ├── train.py     # Implemented baseline. Todo: implement sam
+  └── (sam.py)     # Coming next
+
+test.py            # Validation script
+requirements.txt
+README.md
+```
+
+## Next Steps
+
+1. Add SAM optimizer
+2. Add training loops  
+3. Create experiment runner for 5 replicas
 
