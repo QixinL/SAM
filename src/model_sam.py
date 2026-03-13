@@ -5,7 +5,7 @@ import torch
 import sys
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 
 from src.model import resnet18
 from src.data import get_cifar10_loaders
