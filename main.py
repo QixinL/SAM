@@ -16,11 +16,11 @@ from src.train import train_baseline
 
 DEFAULT_CONFIG = {
     "seed": 42,
-    "batch_size": 256,
+    "batch_size": 64,
     "epochs": 200,
-    "lr": 0.1,
-    "momentum": 0.9,
-    "weight_decay": 0.0005,
+    "lr": 0.1621948163070703,
+    "momentum": 0.9285729026103532,
+    "weight_decay": 0.0016196219073369704,
     "train_fraction": 0.1,
     "val_split": 0.1,
     "device": "cuda" if torch.cuda.is_available() else "cpu",
