@@ -22,10 +22,10 @@ from src.sam_train import evaluate
 # User inputs
 SGD_FOLDERS = ["sgd1", "sgd2", "sgd3", "sgd4", "sgd5"]
 SAM_FOLDERS = ["sam1", "sam2", "sam3", "sam4", "sam5"]
-CHECKPOINT_EPOCH = 400
+CHECKPOINT_EPOCH = 200
 
 # Optional settings
-SAVE_ROOT = "saves"
+SAVE_ROOT = "saves_200"
 DEVICE = DEFAULT_CONFIG["device"]
 BATCH_SIZE = DEFAULT_CONFIG["batch_size"]
 TRAIN_FRACTION = DEFAULT_CONFIG["train_fraction"]

@@ -7,6 +7,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+
+saves_200/
+plots/
+save_github/
 # C extensions
 *.so
 random_search_results.json 
