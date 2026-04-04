@@ -1,0 +1,267 @@
+{
+  "dataset": "DATA_second",
+  "train_total": 39209,
+  "test_total": 12630,
+  "all_total": 51839,
+  "classes": [
+    {
+      "class_id": 0,
+      "train": 210,
+      "test": 60,
+      "total": 270
+    },
+    {
+      "class_id": 1,
+      "train": 2220,
+      "test": 720,
+      "total": 2940
+    },
+    {
+      "class_id": 2,
+      "train": 2250,
+      "test": 750,
+      "total": 3000
+    },
+    {
+      "class_id": 3,
+      "train": 1410,
+      "test": 450,
+      "total": 1860
+    },
+    {
+      "class_id": 4,
+      "train": 1980,
+      "test": 660,
+      "total": 2640
+    },
+    {
+      "class_id": 5,
+      "train": 1860,
+      "test": 630,
+      "total": 2490
+    },
+    {
+      "class_id": 6,
+      "train": 420,
+      "test": 150,
+      "total": 570
+    },
+    {
+      "class_id": 7,
+      "train": 1440,
+      "test": 450,
+      "total": 1890
+    },
+    {
+      "class_id": 8,
+      "train": 1410,
+      "test": 450,
+      "total": 1860
+    },
+    {
+      "class_id": 9,
+      "train": 1470,
+      "test": 480,
+      "total": 1950
+    },
+    {
+      "class_id": 10,
+      "train": 2010,
+      "test": 660,
+      "total": 2670
+    },
+    {
+      "class_id": 11,
+      "train": 1320,
+      "test": 420,
+      "total": 1740
+    },
+    {
+      "class_id": 12,
+      "train": 2100,
+      "test": 690,
+      "total": 2790
+    },
+    {
+      "class_id": 13,
+      "train": 2160,
+      "test": 720,
+      "total": 2880
+    },
+    {
+      "class_id": 14,
+      "train": 780,
+      "test": 270,
+      "total": 1050
+    },
+    {
+      "class_id": 15,
+      "train": 630,
+      "test": 210,
+      "total": 840
+    },
+    {
+      "class_id": 16,
+      "train": 420,
+      "test": 150,
+      "total": 570
+    },
+    {
+      "class_id": 17,
+      "train": 1110,
+      "test": 360,
+      "total": 1470
+    },
+    {
+      "class_id": 18,
+      "train": 1200,
+      "test": 390,
+      "total": 1590
+    },
+    {
+      "class_id": 19,
+      "train": 210,
+      "test": 60,
+      "total": 270
+    },
+    {
+      "class_id": 20,
+      "train": 360,
+      "test": 90,
+      "total": 450
+    },
+    {
+      "class_id": 21,
+      "train": 330,
+      "test": 90,
+      "total": 420
+    },
+    {
+      "class_id": 22,
+      "train": 390,
+      "test": 120,
+      "total": 510
+    },
+    {
+      "class_id": 23,
+      "train": 510,
+      "test": 150,
+      "total": 660
+    },
+    {
+      "class_id": 24,
+      "train": 270,
+      "test": 90,
+      "total": 360
+    },
+    {
+      "class_id": 25,
+      "train": 1500,
+      "test": 480,
+      "total": 1980
+    },
+    {
+      "class_id": 26,
+      "train": 600,
+      "test": 180,
+      "total": 780
+    },
+    {
+      "class_id": 27,
+      "train": 240,
+      "test": 60,
+      "total": 300
+    },
+    {
+      "class_id": 28,
+      "train": 540,
+      "test": 150,
+      "total": 690
+    },
+    {
+      "class_id": 29,
+      "train": 270,
+      "test": 90,
+      "total": 360
+    },
+    {
+      "class_id": 30,
+      "train": 450,
+      "test": 150,
+      "total": 600
+    },
+    {
+      "class_id": 31,
+      "train": 780,
+      "test": 270,
+      "total": 1050
+    },
+    {
+      "class_id": 32,
+      "train": 240,
+      "test": 60,
+      "total": 300
+    },
+    {
+      "class_id": 33,
+      "train": 689,
+      "test": 210,
+      "total": 899
+    },
+    {
+      "class_id": 34,
+      "train": 420,
+      "test": 120,
+      "total": 540
+    },
+    {
+      "class_id": 35,
+      "train": 1200,
+      "test": 390,
+      "total": 1590
+    },
+    {
+      "class_id": 36,
+      "train": 390,
+      "test": 120,
+      "total": 510
+    },
+    {
+      "class_id": 37,
+      "train": 210,
+      "test": 60,
+      "total": 270
+    },
+    {
+      "class_id": 38,
+      "train": 2070,
+      "test": 690,
+      "total": 2760
+    },
+    {
+      "class_id": 39,
+      "train": 300,
+      "test": 90,
+      "total": 390
+    },
+    {
+      "class_id": 40,
+      "train": 360,
+      "test": 90,
+      "total": 450
+    },
+    {
+      "class_id": 41,
+      "train": 240,
+      "test": 60,
+      "total": 300
+    },
+    {
+      "class_id": 42,
+      "train": 240,
+      "test": 90,
+      "total": 330
+    }
+  ],
+  "plot_path": "plot_data\\data_second_class_distribution.png"
+}
