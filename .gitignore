@@ -7,10 +7,17 @@ __pycache__/
 *.py[codz]
 *$py.class
 
-
+DATA_second/ 
 saves_200/
 plots/
 save_github/
+German_data/
+plot_checkpoint_distributions.py
+plot_checkpoint_points.py
+
+plot_single_model_comparison.py
+train_and_plot_epoch_curves.py
+German_data/ 
 # C extensions
 *.so
 random_search_results.json 
