@@ -2,6 +2,21 @@ saves/
 
 data/
 
+
+plot_checkpoint_distributions.py
+plot_checkpoint_points.py
+
+plot_single_model_comparison.py
+train_and_plot_epoch_curves.py
+
+src/
+
+evaluate_checkpoints.py
+main_sam.py
+main.py
+random_search.py
+test.py
+train_checkpoints.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
