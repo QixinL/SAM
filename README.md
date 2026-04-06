@@ -1,76 +1,25 @@
-# SAM
+# German Traffic Sign Data Exploration
 
-### Setup
+This repository is for visualizing and exploring the German Traffic Sign Recognition Benchmark dataset.
 
-git clone https://github.com/QixinL/SAM.git
-
-cd SAM
-
-Save work:
-
-(Adds all new files)
-git add -A
-
-(Commit all files)
-git commit -a -m "Some message here"
-
-(Push commited changes)
-git push
-
-(Pull other people's changes)
-git pull
-
-
-Minimal working version to test Sharpness Aware Minimization (SAM) vs standard SGD on CIFAR-10.
-
-
-## Quick Test
+Run:
 
 ```bash
-pip install -r requirements.txt
-python test.py
-```
-This loads CIFAR-10 (5k training samples) and runs a forward pass through ResNet-18.
-
-Optional: venv
-```bash
-python -m venv venv
+python plot_data_second_class_distribution.py
 ```
 
-Optional: CUDA
-```bash
-# If you want CUDA and have 3.11 or 3.12 installed
-py -3.12 -m venv venv
-nvidia-smi # Obtain your CUDA Version (eg: 13.2) and ask gpt or google to give you the whl installation
+## Citation
 
-# If version newer than 12.8, use 12.8 (latest version) using:
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+The data is free to use. However, we cordially ask you to cite the following publication if you do:
+
+J. Stallkamp, M. Schlipsing, J. Salmen, and C. Igel. The German Traffic Sign Recognition Benchmark: A multi-class classification competition. In Proceedings of the IEEE International Joint Conference on Neural Networks, pages 1453-1460. 2011.
+
+```bibtex
+@inproceedings{Stallkamp-IJCNN-2011,
+    author = {Johannes Stallkamp and Marc Schlipsing and Jan Salmen and Christian Igel},
+    booktitle = {IEEE International Joint Conference on Neural Networks},
+    title = {The {G}erman {T}raffic {S}ign {R}ecognition {B}enchmark: A multi-class classification competition},
+    year = {2011},
+    pages = {1453--1460}
+}
 ```
-## Current Status
-
-✓ CIFAR-10 data loading (10% subset)
-✓ ResNet-18 model
-- [ ] SAM optimizer
-- [ ] Training loops
-- [ ] Experiment runner
-
-## Project Structure
-
-```
-src/
-  ├── model.py     # ResNet-18
-  ├── data.py      # CIFAR-10 loading
-  ├── train.py     # Implemented baseline. Todo: implement sam
-  └── (sam.py)     # Coming next
-
-test.py            # Validation script
-requirements.txt
-README.md
-```
-
-## Next Steps
-
-1. Add SAM optimizer
-2. Add training loops  
-3. Create experiment runner for 5 replicas
-
