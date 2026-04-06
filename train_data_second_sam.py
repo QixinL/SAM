@@ -1,27 +1,30 @@
 """
-Train a ResNet-18 with SAM on a balanced DATA_second split.
+Train a ResNet-18 with SAM on a leakage-safe DATA_second split.
 """
 
 import argparse
 import json
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torchvision.models import resnet18
 
-from data_second_balanced import create_loaders, save_split_manifest
+from data_second_balanced import create_loaders
 
 
 DEFAULT_CONFIG = {
     "data_dir": "DATA_second",
     "output_dir": "runs/data_second_sam",
-    "samples_per_class": None,
+    "split_dir": None,
+    "train_target_per_class": 270,
+    "val_ratio": 0.1,
     "batch_size": 64,
-    "epochs": 50,
-    "lr": 0.1,
-    "momentum": 0.9,
-    "weight_decay": 5e-4,
+    "epochs": 20,
+    "lr": 0.019920,
+    "momentum": 0.8132,
+    "weight_decay": 0.000038,
     "rho": 0.05,
     "grad_clip": 5.0,
     "image_size": 224,
@@ -123,22 +126,52 @@ def evaluate(model, loader, criterion, device):
     return total_loss / total, correct / total
 
 
+def plot_training_curves(history, output_path):
+    epochs = [row["epoch"] for row in history]
+    train_acc = [row["train_acc"] for row in history]
+    val_acc = [row["val_acc"] for row in history]
+    train_loss = [row["train_loss"] for row in history]
+    val_loss = [row["val_loss"] for row in history]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.8))
+
+    axes[0].plot(epochs, train_acc, label="Train Acc", linewidth=2.0)
+    axes[0].plot(epochs, val_acc, label="Val Acc", linewidth=2.0)
+    axes[0].set_title("SAM Accuracy per Epoch")
+    axes[0].set_xlabel("Epoch")
+    axes[0].set_ylabel("Accuracy")
+    axes[0].grid(True, linestyle="--", alpha=0.6)
+    axes[0].legend()
+
+    axes[1].plot(epochs, train_loss, label="Train Loss", linewidth=2.0)
+    axes[1].plot(epochs, val_loss, label="Val Loss", linewidth=2.0)
+    axes[1].set_title("SAM Loss per Epoch")
+    axes[1].set_xlabel("Epoch")
+    axes[1].set_ylabel("Loss")
+    axes[1].grid(True, linestyle="--", alpha=0.6)
+    axes[1].legend()
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=200)
+    plt.close(fig)
+
+
 def train(config):
     torch.manual_seed(config["seed"])
 
     output_dir = Path(config["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
-    split_path = output_dir / "split_manifest.json"
 
-    train_loader, val_loader, test_loader, num_classes, split = create_loaders(
+    train_loader, val_loader, _, num_classes, split = create_loaders(
         data_dir=config["data_dir"],
-        split_manifest_path=split_path,
-        samples_per_class=config["samples_per_class"],
+        split_dir=config["split_dir"],
+        train_target_per_class=config["train_target_per_class"],
+        val_ratio=config["val_ratio"],
         seed=config["seed"],
         batch_size=config["batch_size"],
         image_size=config["image_size"],
+        include_test=False,
     )
-    save_split_manifest(split, split_path)
 
     model = resnet18(weights=None)
     model.fc = nn.Linear(model.fc.in_features, num_classes)
@@ -161,6 +194,7 @@ def train(config):
     history = []
     best_val_acc = -1.0
     best_checkpoint_path = output_dir / "best_sam.pt"
+    plot_path = output_dir / "sam_epoch_curves.png"
 
     for epoch in range(1, config["epochs"] + 1):
         model.train()
@@ -226,34 +260,39 @@ def train(config):
                     "config": config,
                     "num_classes": num_classes,
                     "best_val_acc": best_val_acc,
-                    "split_manifest_path": str(split_path),
+                    "best_epoch": epoch,
+                    "split_dir": str(Path(split["train_clean_csv"]).parent),
                 },
                 best_checkpoint_path,
             )
 
-    test_loss, test_acc = evaluate(model, test_loader, criterion, config["device"])
+    plot_training_curves(history, plot_path)
+
     summary = {
         "config": config,
         "best_val_acc": best_val_acc,
-        "final_test_loss": test_loss,
-        "final_test_acc": test_acc,
         "num_classes": num_classes,
-        "split_manifest_path": str(split_path),
+        "split_dir": str(Path(split["train_clean_csv"]).parent),
         "best_checkpoint_path": str(best_checkpoint_path),
+        "plot_path": str(plot_path),
         "history": history,
+        "clean_split_report": split,
     }
     (output_dir / "sam_training_summary.json").write_text(
         json.dumps(summary, indent=2), encoding="utf-8"
     )
     print(f"Best checkpoint saved to {best_checkpoint_path}")
-    print(f"Final test accuracy: {test_acc:.4f}")
+    print(f"Training curves saved to {plot_path}")
+    return summary
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train SAM ResNet-18 on DATA_second.")
     parser.add_argument("--data-dir", default=DEFAULT_CONFIG["data_dir"])
     parser.add_argument("--output-dir", default=DEFAULT_CONFIG["output_dir"])
-    parser.add_argument("--samples-per-class", type=int, default=DEFAULT_CONFIG["samples_per_class"])
+    parser.add_argument("--split-dir", default=DEFAULT_CONFIG["split_dir"])
+    parser.add_argument("--train-target-per-class", type=int, default=DEFAULT_CONFIG["train_target_per_class"])
+    parser.add_argument("--val-ratio", type=float, default=DEFAULT_CONFIG["val_ratio"])
     parser.add_argument("--batch-size", type=int, default=DEFAULT_CONFIG["batch_size"])
     parser.add_argument("--epochs", type=int, default=DEFAULT_CONFIG["epochs"])
     parser.add_argument("--lr", type=float, default=DEFAULT_CONFIG["lr"])
@@ -273,7 +312,9 @@ if __name__ == "__main__":
         {
             "data_dir": args.data_dir,
             "output_dir": args.output_dir,
-            "samples_per_class": args.samples_per_class,
+            "split_dir": args.split_dir,
+            "train_target_per_class": args.train_target_per_class,
+            "val_ratio": args.val_ratio,
             "batch_size": args.batch_size,
             "epochs": args.epochs,
             "lr": args.lr,

@@ -1,76 +1,112 @@
-# SAM
+# GTSRB Experiments
 
-### Setup
+This branch trains and compares a standard ResNet-18 baseline and a Sharpness-Aware Minimization (SAM) ResNet-18 on the German Traffic Sign Recognition Benchmark (GTSRB), using a leakage-safe `DATA_second` workflow.
 
-git clone https://github.com/QixinL/SAM.git
+## Setup
 
-cd SAM
-
-Save work:
-
-(Adds all new files)
-git add -A
-
-(Commit all files)
-git commit -a -m "Some message here"
-
-(Push commited changes)
-git push
-
-(Pull other people's changes)
-git pull
-
-
-Minimal working version to test Sharpness Aware Minimization (SAM) vs standard SGD on CIFAR-10.
-
-
-## Quick Test
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
-python test.py
 ```
-This loads CIFAR-10 (5k training samples) and runs a forward pass through ResNet-18.
 
-Optional: venv
+## Dataset
+
+Create a folder named `DATA_second/` at the repository root and place the GTSRB data there.
+
+This code expects the dataset to contain:
+
+- `DATA_second/Train.csv`
+- `DATA_second/Test.csv`
+- the image files referenced by those CSVs
+
+The training code builds a clean split from the original training set only, keeps the original test set held out, and removes exact train images that also appear in test.
+
+## Recommended Run Order
+
+Run the models in this order:
+
+1. Train the baseline model first.
+2. Train the SAM model second.
+3. Evaluate checkpoints only after training is complete.
+
+This keeps the baseline as the reference run and makes the SAM comparison easier to interpret.
+
+## Train The Baseline
+
 ```bash
-python -m venv venv
+python train_data_second_baseline.py
 ```
 
-Optional: CUDA
+By default this trains on the clean `DATA_second` split with:
+
+- `lr=0.019920`
+- `momentum=0.8132`
+- `weight_decay=0.000038`
+- `batch_size=64`
+- `epochs=20`
+- `train_target_per_class=270`
+
+The baseline trainer uses training-time augmentation and records per-epoch:
+
+- train accuracy
+- validation accuracy
+- train loss
+- validation loss
+
+It also saves the best validation checkpoint.
+
+## Train The SAM Model
+
 ```bash
-# If you want CUDA and have 3.11 or 3.12 installed
-py -3.12 -m venv venv
-nvidia-smi # Obtain your CUDA Version (eg: 13.2) and ask gpt or google to give you the whl installation
-
-# If version newer than 12.8, use 12.8 (latest version) using:
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-```
-## Current Status
-
-✓ CIFAR-10 data loading (10% subset)
-✓ ResNet-18 model
-- [ ] SAM optimizer
-- [ ] Training loops
-- [ ] Experiment runner
-
-## Project Structure
-
-```
-src/
-  ├── model.py     # ResNet-18
-  ├── data.py      # CIFAR-10 loading
-  ├── train.py     # Implemented baseline. Todo: implement sam
-  └── (sam.py)     # Coming next
-
-test.py            # Validation script
-requirements.txt
-README.md
+python train_data_second_sam.py
 ```
 
-## Next Steps
+The SAM trainer uses the same baseline hyperparameters for:
 
-1. Add SAM optimizer
-2. Add training loops  
-3. Create experiment runner for 5 replicas
+- learning rate
+- momentum
+- weight decay
+- batch size
+- epochs
+- train target per class
 
+It also tracks per-epoch train/validation accuracy and loss and saves the best validation checkpoint.
+
+## Evaluate A Trained Checkpoint
+
+Baseline:
+
+```bash
+python evaluate_data_second_baseline.py --checkpoint <path-to-checkpoint> --split-dir <path-to-split-dir> --split val
+```
+
+SAM:
+
+```bash
+python evaluate_data_second_sam.py --checkpoint <path-to-checkpoint> --split-dir <path-to-split-dir> --split val
+```
+
+Use `--split val` if you want validation evaluation. Use `--split test` only when you are ready for held-out test evaluation.
+
+## Notes
+
+- The clean split is created from `Train.csv`; the original `Test.csv` remains the held-out test set.
+- Training augmentation is applied on the fly during dataloader construction; it does not write augmented images back to disk.
+- Validation and test preprocessing remain deterministic.
+
+## Citation
+
+The data is free to use. However, please cite the following publication if you use it:
+
+J. Stallkamp, M. Schlipsing, J. Salmen, and C. Igel. The German Traffic Sign Recognition Benchmark: A multi-class classification competition. In Proceedings of the IEEE International Joint Conference on Neural Networks, pages 1453-1460. 2011.
+
+```bibtex
+@inproceedings{Stallkamp-IJCNN-2011,
+    author = {Johannes Stallkamp and Marc Schlipsing and Jan Salmen and Christian Igel},
+    booktitle = {IEEE International Joint Conference on Neural Networks},
+    title = {The {G}erman {T}raffic {S}ign {R}ecognition {B}enchmark: A multi-class classification competition},
+    year = {2011},
+    pages = {1453--1460}
+}
+```

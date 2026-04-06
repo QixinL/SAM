@@ -41,3 +41,8 @@ src/
 evaluate_checkpoints.py
 main_sam.py
 main.py
+random_search_data_second_baseline.py 
+
+runs/ 
+compare_baseline_sam_seeds.py
+plot_seed_comparison_from_csv.py
