@@ -1,76 +1,119 @@
-# SAM
+# CIFAR-10 SAM vs SGD
 
-### Setup
+This repository compares standard SGD against Sharpness-Aware Minimization (SAM) on CIFAR-10 using a ResNet-18 model.
 
-git clone https://github.com/QixinL/SAM.git
+## Setup
 
-cd SAM
-
-Save work:
-
-(Adds all new files)
-git add -A
-
-(Commit all files)
-git commit -a -m "Some message here"
-
-(Push commited changes)
-git push
-
-(Pull other people's changes)
-git pull
-
-
-Minimal working version to test Sharpness Aware Minimization (SAM) vs standard SGD on CIFAR-10.
-
-
-## Quick Test
+Install the dependencies:
 
 ```bash
 pip install -r requirements.txt
-python test.py
 ```
-This loads CIFAR-10 (5k training samples) and runs a forward pass through ResNet-18.
 
-Optional: venv
+The CIFAR-10 dataset is downloaded automatically by `torchvision` the first time you run an experiment.
+
+## Repository Layout
+
+- `main.py`: baseline SGD experiment entry point
+- `main_sam.py`: SAM experiment entry point
+- `src/data.py`: CIFAR-10 loaders and augmentation
+- `src/model.py`: ResNet-18 for CIFAR-10
+- `src/train.py`: baseline SGD training loop
+- `src/sam_train.py`: SAM optimizer and SAM training loop
+
+## Exact Run Order
+
+Run these files in this order:
+
+1. Run `main.py` to train the baseline SGD model on CIFAR-10.
+2. Run `main_sam.py` to train the SAM model on CIFAR-10.
+
+Commands:
+
 ```bash
-python -m venv venv
+python main.py
+python main_sam.py
 ```
 
-Optional: CUDA
+### File 1: `main.py`
+
 ```bash
-# If you want CUDA and have 3.11 or 3.12 installed
-py -3.12 -m venv venv
-nvidia-smi # Obtain your CUDA Version (eg: 13.2) and ask gpt or google to give you the whl installation
-
-# If version newer than 12.8, use 12.8 (latest version) using:
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-```
-## Current Status
-
-✓ CIFAR-10 data loading (10% subset)
-✓ ResNet-18 model
-- [ ] SAM optimizer
-- [ ] Training loops
-- [ ] Experiment runner
-
-## Project Structure
-
-```
-src/
-  ├── model.py     # ResNet-18
-  ├── data.py      # CIFAR-10 loading
-  ├── train.py     # Implemented baseline. Todo: implement sam
-  └── (sam.py)     # Coming next
-
-test.py            # Validation script
-requirements.txt
-README.md
+python main.py
 ```
 
-## Next Steps
+This file:
 
-1. Add SAM optimizer
-2. Add training loops  
-3. Create experiment runner for 5 replicas
+- loads CIFAR-10 through `src/data.py`
+- builds the ResNet-18 model from `src/model.py`
+- trains the baseline with `src/train.py`
 
+Default settings:
+
+- `seed=42`
+- `batch_size=64`
+- `epochs=200`
+- `lr=0.1621948163070703`
+- `momentum=0.9285729026103532`
+- `weight_decay=0.0016196219073369704`
+- `train_fraction=0.1`
+- `val_split=0.1`
+
+### File 2: `main_sam.py`
+
+```bash
+python main_sam.py
+```
+
+This file:
+
+- loads CIFAR-10 through `src/data.py`
+- builds the model through `src/model_sam.py`
+- trains with SAM through `src/sam_train.py`
+
+The SAM run uses the same base hyperparameters as the baseline, with the additional SAM parameter:
+
+- `rho=0.05`
+
+## What The Code Does
+
+- The model is a CIFAR-10 ResNet-18.
+- The loader uses a subset of the CIFAR-10 training set controlled by `train_fraction`.
+- The training split uses `RandomCrop(32, padding=4)` and `RandomHorizontalFlip()`.
+- Validation and test splits use normalization only.
+- Both training scripts report train loss, validation loss, and validation accuracy during training.
+- The current tracked entry points train against the validation split; they do not save checkpoints by default.
+
+## Command Examples
+
+Run the exact baseline file with custom settings:
+
+```bash
+python main.py --epochs 100 --batch-size 128 --train-fraction 1.0
+```
+
+Run the exact SAM file with custom settings:
+
+```bash
+python main_sam.py --epochs 100 --batch-size 128 --train-fraction 1.0 --rho 0.05
+```
+
+You can override:
+
+- `--seed`
+- `--batch-size`
+- `--epochs`
+- `--lr`
+- `--momentum`
+- `--weight-decay`
+- `--train-fraction`
+- `--val-split`
+- `--device`
+
+SAM also supports:
+
+- `--rho`
+
+## Notes
+
+- On Windows, the dataloader uses `num_workers=0` to avoid worker hangs.
+- If CUDA is available, the scripts use it automatically unless you override `--device`.

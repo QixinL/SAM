@@ -29,10 +29,15 @@ src/random_search_results.json
 
 # Data exploration branch-only scripts
 plot_data_second_class_distribution.py
-random_search.py
-test.py
+
+
 train_and_plot_epoch_curves.py
-train_checkpoints.py
+
 plot_single_model_comparison.py
 plot_checkpoint_points.py
 plot_checkpoint_distributions.py 
+random_search_data_second_baseline.py
+compare_baseline_sam_seeds.py
+runs/ 
+random_search_data_second_baseline
+plot_seed_comparison_from_csv.py
