@@ -1,51 +1,58 @@
-# SAM
+# SAM Experiments Repository
 
-Reimplementation of Sharpness Aware Minimization (SAM) https://arxiv.org/pdf/2010.01412.
-We compare the performance of SAM with Stochastic Gradient Descent (SGD) on CIFAR-10 and GTSRB on smaller parameter models (ResNet-18) that can be trained locally.
+This repository is for the project `Evaluating the Effect of Sharpness-Aware Minimization on Model Generalization`.
 
-### Setup
+It contains two experiment tracks:
 
-git clone https://github.com/QixinL/SAM.git
-cd SAM
+- CIFAR-10
+- GTSRB
+
+The experiments are based on Sharpness-Aware Minimization (SAM) from Foret et al. [1].
+
+This repository contains multiple experiment branches. Start on `main`, then switch to the branch for the workflow you want.
+
+## Branches
+
+### CIFAR-10 experiment
+
+Switch to the CIFAR-10 branch:
 
 ```bash
-pip install -r requirements.txt
+git switch CIFAR-10
 ```
 
-Optional: venv
+Then run:
+
 ```bash
-python -m venv venv
+python main.py
+python main_sam.py
 ```
 
-Optional: CUDA
+### GTSRB experiment
+
+Switch to the GTSRB branch:
+
 ```bash
-# If you want CUDA and have 3.11 or 3.12 installed
-py -3.12 -m venv venv
-nvidia-smi # Obtain your CUDA Version (eg: 13.2) and ask gpt or google to give you the whl installation
-
-# If version newer than 12.8, use 12.8 (latest version) using:
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+git switch GTSRB
 ```
-## Current Status
-main.py runs SGD on CIFAR-10
-main_sam.py runs SAM on CIFAR-10
 
-Currently, training on GTSRB is in a seperate branch (called GTSRB)
+Then follow the branch-specific README for the German traffic sign training workflow.
 
-## Project Structure
+### German dataset visualization
 
+Switch to the data exploration branch:
+
+```bash
+git switch Data_Exploration
 ```
-src/
-  ├── model.py     # ResNet-18
-  ├── model_sam.py # Instanciates model.py for SAM
-  ├── data.py      # CIFAR-10 dataset loading
-  ├── train.py     # Trains SGD
-  └── sam_train.py # Trains SAM 
 
-main_sam.py        # Runs SAM training
-main.py            # Runs SGD training
-MIE424_Dataset     # Test for loading CIFAR-10 and GTSRB
-requirements.txt
-README.md
+Then run:
+
+```bash
+python plot_data_second_class_distribution.py
 ```
+
+## Citation
+
+[1] P. Foret, A. Kleiner, H. Mobahi, and B. Neyshabur, Sharpness-Aware Minimization for Efficiently Improving Generalization, in International Conference on Learning Representations (ICLR), 2021.
 
